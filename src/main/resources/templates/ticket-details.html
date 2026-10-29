@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Ticket Details - Service Desk</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<nav class="navbar">
+    <a href="/" class="navbar-brand">Service Desk</a>
+    <div class="flex align-center gap-4">
+            <span style="font-size: 14px; color: var(--text-muted);">
+                <strong th:text="${#authentication.name}">User</strong>
+            </span>
+        <form th:action="@{/logout}" method="post" style="margin: 0;">
+            <button type="submit" class="btn btn-secondary btn-sm">Logout</button>
+        </form>
+    </div>
+</nav>
+
+<div class="main-container animate-fade-in">
+    <div class="card">
+        <h2 th:text="${ticket.title}">Ticket Title</h2>
+        <p><strong>Status:</strong> <span class="badge" th:classappend="'badge-' + ${ticket.status}" th:text="${ticket.status}">NEW</span></p>
+        <p><strong>Category:</strong> <span th:text="${ticket.category}">HARDWARE</span></p>
+        <p><strong>Author:</strong> <span th:text="${ticket.author.username}">user</span></p>
+        <p><strong>Created At:</strong> <span th:text="${ticket.createdAt}">2026-01-01</span></p>
+        <p><strong>SLA Deadline:</strong> <span th:text="${ticket.slaDeadline}" th:style="${ticket.escalated} ? 'color: red; font-weight: bold;' : ''">2026-01-02</span></p>
+        <p><strong>Description:</strong></p>
+        <p style="background: #f9fafb; padding: 12px; border-radius: 8px;" th:text="${ticket.description}">Description</p>
+    </div>
+
+    <div class="card">
+        <h3>Comments</h3>
+        <div th:if="${comments.isEmpty()}" style="color: var(--text-muted);">No comments yet.</div>
+        <div th:each="comment : ${comments}" style="border-bottom: 1px solid var(--border-color); padding: 10px 0;">
+            <p><strong th:text="${comment.author.username}">user</strong>
+                <span style="color: var(--text-muted); font-size: 12px;" th:text="${comment.createdAt}">date</span></p>
+            <p th:text="${comment.text}">Comment text</p>
+        </div>
+
+        <form th:action="@{/tickets/{id}/comments(id=${ticket.id})}" method="post" style="margin-top: 20px;">
+            <div class="form-group">
+                <label for="text">Add a comment</label>
+                <textarea id="text" name="text" class="form-control" rows="3" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Post Comment</button>
+        </form>
+    </div>
+
+    <a href="/tickets" class="btn btn-secondary">Back to Tickets</a>
+</div>
+</body>
+</html>

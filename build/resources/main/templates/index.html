@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Service Desk - Home</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<nav class="navbar">
+    <a href="/" class="navbar-brand">Service Desk</a>
+    <div class="flex align-center gap-4">
+            <span style="font-size: 14px; color: var(--text-muted);">
+                <strong th:text="${#authentication.name}">User</strong>
+            </span>
+        <form th:action="@{/logout}" method="post" style="margin: 0;">
+            <button type="submit" class="btn btn-secondary btn-sm">Logout</button>
+        </form>
+    </div>
+</nav>
+
+<div class="main-container animate-fade-in">
+    <div class="card">
+        <h2>Welcome back, <span th:text="${#authentication.name}">User</span>!</h2>
+        <p style="color: var(--text-muted);">Your roles:
+            <span th:text="${#authentication.authorities}" style="font-weight: 600;">ROLE_USER</span>
+        </p>
+        <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 20px 0;">
+
+        <h3>Available Actions</h3>
+        <div class="flex gap-4" style="flex-wrap: wrap;">
+            <a href="/tickets/new" class="btn btn-primary">+ Create New Ticket</a>
+            <a href="/tickets" class="btn btn-secondary">My Tickets</a>
+
+            <a th:if="${#authorization.expression('hasAnyRole(''ADMIN'', ''MANAGER'')')}"
+               href="/manager/tickets" class="btn btn-secondary">
+                View All Tickets (Manager/Admin)
+            </a>
+
+            <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}"
+               href="/admin/users" class="btn btn-secondary">
+                Manage Users (Admin only)
+            </a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
